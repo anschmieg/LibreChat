@@ -77,7 +77,7 @@ interface:
 
 # Example Registration Object Structure (optional)
 registration:
-  socialLogins: ["nextcloud"]
+  socialLogins: ["openid"]
   # allowedDomains:
   # - "gmail.com"
 
