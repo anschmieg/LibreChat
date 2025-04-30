@@ -1,0 +1,47 @@
+services:
+  api:
+    image: ghcr.io/danny-avila/librechat:latest
+    environment:
+      - DOMAIN_CLIENT=chat.nothing.pink
+      - DOMAIN_SERVER=chat.nothing.pink
+      - MONGO_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/LibreChat?authSource=admin
+    ports:
+      - "3080:3080"
+    volumes:
+      - type: bind
+        source: ./uploads
+        target: /app/uploads
+      - type: bind
+        source: ./images
+        target: /app/client/public/images
+      - type: bind
+        source: ./librechat.yaml
+        target: /app/librechat.yaml
+        read_only: true
+
+  vectordb:
+    volumes:
+      - ./pgdata2:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:8.0
+    restart: unless-stopped
+    volumes:
+      - ./data-node:/data/db
+    command: --auth
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+
+  meilisearch:
+    environment:
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY}
+
+# Add these lines to ensure proper permissions
+volumes:
+  data-node:
+    driver: local
+    driver_opts:
+      type: 'none'
+      device: /data/node
+      o: 'uid=1000,gid=1000'
