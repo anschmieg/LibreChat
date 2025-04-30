@@ -115,3 +115,6 @@ uploads/
 release/
 !/client/src/@types/i18next.d.ts
 .aider*
+
+pgdata2
+pgdata2/**
